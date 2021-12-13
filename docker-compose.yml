@@ -3,7 +3,7 @@ services:
   frontend:
     build:
       context: ./frontend
-    image: frontend:latest
+    image: ollywelch/webapp-frontend:latest
     ports:
       - "80:80"
       - "443:443"
@@ -16,6 +16,6 @@ services:
   backend:
     build:
       context: ./backend
-    image: backend:latest
+    image: ollywelch/webapp-backend:latest
     ports:
       - "8080:8080"
