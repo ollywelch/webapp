@@ -14,7 +14,7 @@ export class MessageService {
     private http: HttpClient
   ) { }
 
-  private apiUrl = '/api/v1/';
+  private apiUrl = '/api/';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
