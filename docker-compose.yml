@@ -1,6 +1,8 @@
 version: '3'
 services:
   frontend:
+    depends_on:
+      - backend
     build:
       context: ./frontend
     image: ollywelch/webapp-frontend:latest
