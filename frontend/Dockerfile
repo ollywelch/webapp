@@ -7,6 +7,7 @@ RUN mkdir -p /app
 WORKDIR /app
 
 COPY package.json /app
+COPY .npmrc /app
 
 RUN npm install
 
