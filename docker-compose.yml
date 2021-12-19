@@ -3,9 +3,13 @@ services:
   frontend:
     build:
       context: ./frontend
+      cache_from:
+        - node:16-alpine
+        - nginx:1.21.4-alpine
+        - localhost:5000/webapp-frontend:latest
     depends_on:
       - backend
-    image: ollywelch/webapp-frontend:latest
+    image: localhost:5000/webapp-frontend:latest
     ports:
       - "80:80"
       - "443:443"
@@ -18,11 +22,25 @@ services:
   backend:
     build:
       context: ./backend
+      cache_from:
+        - python:3.8-slim
+        - localhost:5000/webapp-backend:latest
+    environment:
+      - DB_DATABASE=webapp
+      - DB_HOST=postgresdb
+      - DB_PORT=5432
+      - IS_DB_SQLITE=False
     depends_on:
       - postgresdb
-    image: ollywelch/webapp-backend:latest
+    image: localhost:5000/webapp-backend:latest
     ports:
       - "8080:8080"
+    secrets:
+      - source: postgres_user
+        target: db_user
+      - source: postgres_password
+        target: db_password
+      - jwt_secret_key
   postgresdb:
     image: postgres:latest
     environment:
@@ -40,6 +58,8 @@ secrets:
   postgres_user:
     external: true
   postgres_password:
+    external: true
+  jwt_secret_key:
     external: true
 volumes:
   pgdata:

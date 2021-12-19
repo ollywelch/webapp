@@ -17,7 +17,8 @@ RUN ./venv/bin/pip install --upgrade pip && \
 
 COPY app app
 
-COPY entrypoint.sh entrypoint.sh
+COPY entrypoint.sh .
+COPY alembic.ini .
 
 RUN chmod +x entrypoint.sh
 
