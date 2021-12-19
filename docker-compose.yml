@@ -18,6 +18,7 @@ services:
       - "/etc/letsencrypt:/etc/letsencrypt"
     environment:
       - SERVER=${SERVER}
+      - STACK=${STACK}
     command: /bin/sh -c "envsubst '$$SERVER $$STACK' < /etc/nginx/conf.d/proxy.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
   backend:
     build:
