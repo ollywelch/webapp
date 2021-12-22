@@ -14,9 +14,13 @@
             </button>
 
             <span routerLink="/">My Recipes</span>
-            <div id="login">
+            <div id="login" *ngIf="!isLoading&&!currentUser">
                 <button mat-raised-button routerLink="login">Login</button>
                 <button mat-raised-button color="accent" routerLink="sign-up">Sign Up</button>
+            </div>
+            <div id="login" *ngIf="currentUser&&!isLoading">
+                <p>Welcome {{ currentUser.username }}</p>
+                <button mat-raised-button (click)=logout()>Sign Out</button>
             </div>
         </mat-toolbar>
         <router-outlet></router-outlet>
