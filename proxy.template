@@ -21,11 +21,10 @@ server {
     ssl_session_cache shared:SSL:10m;                                                                       
                                                               
     proxy_buffering off;
-    access_log            /var/log/nginx/access.log;    
+    access_log            /var/log/nginx/access.log;  
+    root /usr/share/nginx/html;  
     location / {
-      allow all;
-      root /usr/share/nginx/html;
-      default_type "text/plain";
+      try_files $uri $uri/ /index.html;
    }
    location /api/ {
       proxy_pass          http://${STACK}_backend:8080/;
