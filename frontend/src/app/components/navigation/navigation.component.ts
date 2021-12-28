@@ -31,11 +31,13 @@ export class NavigationComponent {
   }
 
   getCurrentUser(): void {
-    this.authService.currentUser()
-    .subscribe(user => {
-      this.currentUser = user;
-      this.isLoading = false;
-    });
+    if (localStorage.getItem('token')) {
+      this.authService.currentUser()
+      .subscribe(user => {
+        this.currentUser = user;
+        this.isLoading = false;
+      });
+    }
   }
 
   logout(): void {
