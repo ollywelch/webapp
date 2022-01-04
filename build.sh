@@ -1,6 +1,6 @@
 #!/bin/bash
 
-registry=ollywelch
+registry=localhost:5000
 
 while getopts r: flag
 do

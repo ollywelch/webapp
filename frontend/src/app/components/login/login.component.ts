@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -9,21 +10,46 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginComponent implements OnInit {
 
+  loading = false;
+  submitted = false;
+  error = '';
+  returnUrl: string;
+
   hide = true;
   
-  constructor(private authService: AuthService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService
+  ) { 
+    // redirect to home if already logged in
+    if (this.authService.isLoggedIn()) { 
+      this.router.navigate(['/']);
+    }
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+  }
 
   ngOnInit(): void {
   }
 
   onSubmit(form: NgForm): void {
+    this.submitted = true;
     if (form.invalid) {
       return;
     }
+    this.loading = true;
     this.authService.authenticateUser(
       form.value.username,
       form.value.password
-    ).subscribe();
+    ).subscribe({
+      next: () => {
+        this.router.navigate([this.returnUrl]);
+      },
+      error: error => {
+        this.error = error;
+        this.loading = false;
+      }
+    });
   }
 
 }

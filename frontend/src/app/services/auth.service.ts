@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, retry, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { AuthData } from '../interfaces/auth-data';
@@ -13,12 +13,14 @@ import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
 })
 export class AuthService {
 
+  private apiUrl = environment.apiUrl;
+
   constructor(
     private http: HttpClient,
     private router: Router
   ) { }
 
-  private apiUrl = environment.apiUrl;
+  
 
     /**
  * Handle Http operation that failed.
@@ -63,16 +65,21 @@ export class AuthService {
       fromObject: {username: username, password: password}
     });
     return this.http.post<Token>(this.apiUrl + "/auth/token", params.toString(), this.httpOptions).pipe(
+      retry(2),
       tap((token: Token) => {
         localStorage.setItem('token', token.access_token);
-        this.router.navigate(['/']);
       }),
       catchError(this.handleError<Token>('getToken'))
       );
   }
 
+  isLoggedIn() {
+    return localStorage.getItem('token') != null;
+  }
+
   currentUser(): Observable<User> {
     return this.http.get<User>(this.apiUrl + '/users/me/').pipe(
+      retry(2),
       tap((user: User) => {
         console.log("Current user is " + user.username);
       }),
@@ -81,8 +88,8 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.setItem('token', '');
-    this.router.navigate(['/']);
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
 
 

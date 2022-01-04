@@ -15,14 +15,13 @@
 
             <span routerLink="/">My Recipes</span>
             <div id="login" *ngIf="!currentUser">
-                <button mat-raised-button routerLink="login">Login</button>
-                <button mat-raised-button color="accent" routerLink="sign-up">Sign Up</button>
+                <button mat-raised-button routerLink="/login">Login</button>
+                <button mat-raised-button color="accent" routerLink="/sign-up">Sign Up</button>
             </div>
             <div id="login" *ngIf="currentUser">
                 <p>Welcome {{ currentUser.username }}</p>
                 <button mat-raised-button (click)=logout()>Sign Out</button>
             </div>
         </mat-toolbar>
-        <router-outlet></router-outlet>
     </mat-sidenav-content>
 </mat-sidenav-container>
