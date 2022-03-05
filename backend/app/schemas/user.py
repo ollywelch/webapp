@@ -1,6 +1,5 @@
-from typing import List, Optional
-
 from pydantic import BaseModel
+
 
 class UserBase(BaseModel):
     username: str
@@ -16,6 +15,7 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+
 
 class UserInDB(User):
     hashed_password: str

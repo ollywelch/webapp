@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
       form.value.password
     ).subscribe({
       next: () => {
-        this.router.navigate([this.returnUrl]);
+        this.authService.getCurrentUser().subscribe(() => this.router.navigate([this.returnUrl]));
       },
       error: error => {
         this.error = error;

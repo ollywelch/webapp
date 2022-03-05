@@ -1,4 +1,3 @@
-from typing import overload
 from pydantic import BaseSettings
 
 
@@ -15,6 +14,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
-        secrets_dir = '/run/secrets'
+        secrets_dir = "/run/secrets"
+
 
 config = Settings()

@@ -1,17 +1,16 @@
-from fastapi import Depends, HTTPException, status
-from typing import Optional
-from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from jose import JWTError, jwt
-from passlib.context import CryptContext
+from typing import Optional
 
-from app.schemas.auth import Token, TokenData
-from app.schemas.user import User
-from app.services.user import get_user
 from app.config.settings import config
-
+from app.schemas.auth import Token
+from app.services.user import get_user
+from fastapi import HTTPException, status
+from jose import jwt
+from passlib.context import CryptContext
+from sqlalchemy.orm import Session
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -29,6 +28,7 @@ def authenticate_user(db: Session, username: str, password: str):
         return False
     return user
 
+
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -36,7 +36,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, config.jwt_secret_key, algorithm=config.jwt_algorithm)
+    encoded_jwt = jwt.encode(
+        to_encode, config.jwt_secret_key, algorithm=config.jwt_algorithm
+    )
     return encoded_jwt
 
 
@@ -52,6 +54,4 @@ def login_and_create_access_token(db: Session, username: str, password: str):
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    return Token(
-        **{"access_token": access_token, "token_type": "bearer"}
-    )
+    return Token(**{"access_token": access_token, "token_type": "bearer"})

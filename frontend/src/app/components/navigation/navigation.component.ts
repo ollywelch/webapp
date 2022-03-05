@@ -20,24 +20,13 @@ export class NavigationComponent {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private authService: AuthService
+    public authService: AuthService
     ) {}
 
-  currentUser?: User;
   isLoading: boolean = true;
 
   ngOnInit() {
-    this.getCurrentUser();
-  }
-
-  getCurrentUser(): void {
-    if (localStorage.getItem('token')) {
-      this.authService.currentUser()
-      .subscribe(user => {
-        this.currentUser = user;
-        this.isLoading = false;
-      });
-    }
+    this.authService.getCurrentUser().subscribe(() => this.isLoading = false);
   }
 
   logout(): void {

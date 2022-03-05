@@ -14,6 +14,7 @@ import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
 export class AuthService {
 
   private apiUrl = environment.apiUrl;
+  public currentUser?: User
 
   constructor(
     private http: HttpClient,
@@ -54,7 +55,6 @@ export class AuthService {
     return this.http.post<User>(this.apiUrl + "/users/", authData).pipe(
       tap((newUser: User) =>{
         console.log(`New user added with username ${newUser.username}`);
-        this.router.navigate(['/login']);
       }),
       catchError(this.handleError<User>('addUser'))
       );
@@ -65,7 +65,6 @@ export class AuthService {
       fromObject: {username: username, password: password}
     });
     return this.http.post<Token>(this.apiUrl + "/auth/token", params.toString(), this.httpOptions).pipe(
-      retry(2),
       tap((token: Token) => {
         localStorage.setItem('token', token.access_token);
       }),
@@ -77,11 +76,10 @@ export class AuthService {
     return localStorage.getItem('token') != null;
   }
 
-  currentUser(): Observable<User> {
+  getCurrentUser(): Observable<User> {
     return this.http.get<User>(this.apiUrl + '/users/me/').pipe(
-      retry(2),
       tap((user: User) => {
-        console.log("Current user is " + user.username);
+        this.currentUser = user;
       }),
       catchError(this.handleError<User>('getCurrentUser'))
     );
@@ -89,6 +87,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.clear();
+    this.currentUser = undefined;
     this.router.navigate(['/login']);
   }
 

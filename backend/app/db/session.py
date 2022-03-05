@@ -1,6 +1,6 @@
+from app.config.settings import config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.config.settings import config
 
 if config.is_db_sqlite:
     engine = create_engine(
